@@ -189,26 +189,19 @@ function updateReadme(allJobs, cache) {
     const statusIcon = cached.status === "open" ? "✅ Open" : cached.status === "closed" ? "❌ Closed" : "❓ Unknown";
     const title = cached.title ? `[${cached.title}](${job.url})` : `[View posting](${job.url})`;
     const checked = cached.lastChecked ? cached.lastChecked.slice(0, 10) : "—";
-    return `| ${title} | ${cached.company ?? "—"} | ${cached.location ?? "—"} | ${statusIcon} | ${checked} | ${job.message ?? "—"} |`;
+    return `| ${title} | ${cached.company ?? "—"} | ${statusIcon} | ${checked} | ${job.message ?? "—"} |`;
   }).filter(Boolean);
 
-  const table = [
-    "| Job | Company | Location | Status | Last Checked | Notes |",
-    "|-----|---------|----------|--------|-------------|-------|",
-    ...rows,
-  ].join("\n");
+  const header = [
+    "| Role | Company | Status | Last Checked | Notes |",
+    "|------|---------|--------|-------------|-------|",
+  ];
 
-  const section = `## Tracked Jobs\n\n${rows.length ? table : "_No jobs checked yet. Add URLs to `jobs.json` and run the check._"}`;
+  const content = rows.length
+    ? [...header, ...rows].join("\n")
+    : "_No jobs tracked yet._";
 
-  let readme = existsSync(readmeFile) ? readFileSync(readmeFile, "utf-8") : "";
-
-  if (readme.includes("## Tracked Jobs")) {
-    readme = readme.replace(/## Tracked Jobs[\s\S]*?(?=\n## |\n---|\s*$)/, section + "\n\n");
-  } else {
-    readme = readme.trimEnd() + "\n\n" + section + "\n";
-  }
-
-  writeFileSync(readmeFile, readme);
+  writeFileSync(readmeFile, `# Tracked Jobs\n\n${content}\n`);
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
