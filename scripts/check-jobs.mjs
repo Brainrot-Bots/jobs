@@ -183,22 +183,24 @@ function createGitHubIssue(job, details, type) {
 // ─── README update ───────────────────────────────────────────────────────────
 
 function updateReadme(allJobs, cache) {
-  const rows = allJobs.map((job) => {
+  const cards = allJobs.map((job) => {
     const cached = cache[job.url];
     if (!cached) return null;
     const statusIcon = cached.status === "open" ? "✅ Open" : cached.status === "closed" ? "❌ Closed" : "❓ Unknown";
-    const title = cached.title ? `[${cached.title}](${job.url})` : `[View posting](${job.url})`;
-    const checked = cached.lastChecked ? cached.lastChecked.slice(0, 10) : "—";
-    return `| ${title} | ${cached.company ?? "—"} | ${statusIcon} | ${checked} | ${job.message ?? "—"} |`;
+    const title = cached.title ?? "View posting";
+    const checked = cached.lastChecked
+      ? new Date(cached.lastChecked).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "—";
+    const lines = [
+      `### ${statusIcon} &nbsp; [${title}](${job.url})`,
+      `**${cached.company ?? "Unknown"}** &nbsp;·&nbsp; checked ${checked}`,
+    ];
+    if (job.message) lines.push(`> ${job.message}`);
+    return lines.join("\n");
   }).filter(Boolean);
 
-  const header = [
-    "| Role | Company | Status | Last Checked | Notes |",
-    "|------|---------|--------|-------------|-------|",
-  ];
-
-  const content = rows.length
-    ? [...header, ...rows].join("\n")
+  const content = cards.length
+    ? cards.join("\n\n---\n\n") + "\n\n---"
     : "_No jobs tracked yet._";
 
   writeFileSync(readmeFile, `# Tracked Jobs\n\n${content}\n`);
