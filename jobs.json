@@ -1,3 +1,9 @@
 {
-  "jobs": []
+  "jobs": [
+    {
+      "url": "https://www.google.com/about/careers/applications/jobs/results/82087125486314182-manufacturing-structural-test-development-engineer",
+      "message": "Google structural test engineer role — example entry",
+      "schedule": "daily"
+    }
+  ]
 }
