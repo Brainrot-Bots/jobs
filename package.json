@@ -1,0 +1,14 @@
+{
+  "name": "jobs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Brainrot Creations job posting tracker — checks if job postings are still open.",
+  "scripts": {
+    "check": "node scripts/check-jobs.mjs",
+    "add": "node scripts/add-job.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
