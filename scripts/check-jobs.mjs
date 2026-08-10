@@ -189,7 +189,7 @@ function updateReadme(allJobs, cache) {
     const statusIcon = cached.status === "open" ? "✅ Open" : cached.status === "closed" ? "❌ Closed" : "❓ Unknown";
     const title = cached.title ?? "View posting";
     const checked = cached.lastChecked
-      ? new Date(cached.lastChecked).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      ? new Date(cached.lastChecked).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York", timeZoneName: "short" })
       : "—";
     const lines = [
       `### ${statusIcon} &nbsp; [${title}](${job.url})`,
