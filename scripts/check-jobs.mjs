@@ -94,8 +94,8 @@ async function fetchPage(url) {
 // ─── Open/closed detection ───────────────────────────────────────────────────
 
 const APPLY_PATTERNS = [
+  /href="[^"]*\/apply\?jobId=/i,         // Google Careers — apply link present
   /\bapply\s+(now|for\s+this|to\s+this)/i,
-  /<[^>]*(class|id|aria-label)[^>]*=["'][^"']*apply[^"']*["'][^>]*>/i,
   />Apply</i,
   /value=["']Apply["']/i,
 ];
@@ -152,16 +152,21 @@ function extractDetails(html, url) {
 
 // ─── GitHub Issue notification ───────────────────────────────────────────────
 
-function createGitHubIssue(job, details, message) {
-  const title = `🔴 Job closed: ${details.title ?? job.url}`;
+function createGitHubIssue(job, details, type) {
+  const isOpen = type === "opened";
+  const emoji = isOpen ? "🟢" : "🔴";
+  const verb = isOpen ? "opened" : "closed";
+  const title = `${emoji} Job ${verb}: ${details.title ?? job.url}`;
   const body = [
     `**Company:** ${details.company}`,
     details.title ? `**Role:** ${details.title}` : null,
     details.location ? `**Location:** ${details.location}` : null,
     `**URL:** ${job.url}`,
-    message ? `**Note:** ${message}` : null,
+    details.message ? `**Note:** ${details.message}` : null,
     "",
-    `This posting no longer shows an Apply button.`,
+    isOpen
+      ? `This posting now shows an Apply button — go apply!`
+      : `This posting no longer shows an Apply button.`,
   ].filter((l) => l !== null).join("\n");
 
   try {
@@ -169,7 +174,7 @@ function createGitHubIssue(job, details, message) {
       stdio: "pipe",
       cwd: repoRoot,
     });
-    console.log(`  📬 GitHub Issue created for closed job`);
+    console.log(`  📬 GitHub Issue created (${verb})`);
   } catch {
     console.log(`  ⚠️  Could not create GitHub Issue (gh CLI not available or not authenticated)`);
   }
@@ -249,10 +254,13 @@ for (const job of jobs) {
   const displayTitle = title ?? company;
   console.log(`${icon} ${status.toUpperCase()} — ${displayTitle}${location ? ` · ${location}` : ""} (${reason})`);
 
-  // Detect open → closed transition
-  if (cached?.status === "open" && status === "closed") {
+  // Notify on status transitions
+  if (status === "open" && cached?.status !== "open") {
     anyChanged = true;
-    createGitHubIssue(job, { company, title, location }, job.message);
+    createGitHubIssue(job, { company, title, location, message: job.message }, "opened");
+  } else if (status === "closed" && cached?.status === "open") {
+    anyChanged = true;
+    createGitHubIssue(job, { company, title, location, message: job.message }, "closed");
   }
 
   cache[job.url] = {

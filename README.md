@@ -49,6 +49,10 @@ Auto-detected from URL: Google, Meta, Microsoft, Apple, Amazon, Netflix, OpenAI,
 
 | Job | Company | Location | Status | Last Checked | Notes |
 |-----|---------|----------|--------|-------------|-------|
-| [Manufacturing Structural Test Development Engineer](https://www.google.com/about/careers/applications/jobs/results/82087125486314182-manufacturing-structural-test-development-engineer) | Google | — | ✅ Open | 2026-08-10 | Google structural test engineer role — example entry |
+| [Software Engineer, Early Career, Campus](https://www.google.com/about/careers/applications/jobs/results/78703249065943750-software-engineer-early-career-campus) | Google | — | ❓ Unknown | 2026-08-10 | Google SWE early career campus role |
+
+
+
+
 
 
