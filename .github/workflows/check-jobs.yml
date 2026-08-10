@@ -2,8 +2,8 @@ name: Check Job Postings
 
 on:
   schedule:
-    - cron: "0 * * * *"  # hourly — per-job schedule logic runs inside the script
-  workflow_dispatch:       # manual trigger
+    - cron: "0 */6 * * *"  # every 6 hours — matches minimum schedule in jobs.json
+  workflow_dispatch:         # manual trigger
 
 permissions:
   contents: write

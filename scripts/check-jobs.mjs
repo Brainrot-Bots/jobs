@@ -27,17 +27,26 @@ const readmeFile = join(repoRoot, "README.md");
 
 const force = process.argv.includes("--force");
 
-// ─── Schedule windows ────────────────────────────────────────────────────────
+// ─── Schedule parsing ─────────────────────────────────────────────────────────
+// Accepts: "6h", "30m", "2d", "1h30m", or legacy names "hourly"/"daily"/"weekly"
 
-const SCHEDULE_MS = {
-  hourly: 55 * 60 * 1000,
-  daily: 23 * 60 * 60 * 1000,
-  weekly: 6 * 24 * 60 * 60 * 1000,
-};
+const LEGACY_MS = { hourly: 60, daily: 24 * 60, weekly: 7 * 24 * 60 };
+
+function parseScheduleMinutes(schedule) {
+  if (LEGACY_MS[schedule]) return LEGACY_MS[schedule];
+  let mins = 0;
+  const days = schedule.match(/(\d+(?:\.\d+)?)d/i);
+  const hours = schedule.match(/(\d+(?:\.\d+)?)h/i);
+  const minutes = schedule.match(/(\d+(?:\.\d+)?)m(?!s)/i);
+  if (days) mins += parseFloat(days[1]) * 24 * 60;
+  if (hours) mins += parseFloat(hours[1]) * 60;
+  if (minutes) mins += parseFloat(minutes[1]);
+  return mins > 0 ? mins : 24 * 60; // default 24h
+}
 
 function isDue(cachedEntry, schedule) {
   if (force || !cachedEntry?.lastChecked) return true;
-  const windowMs = SCHEDULE_MS[schedule] ?? SCHEDULE_MS.daily;
+  const windowMs = parseScheduleMinutes(schedule) * 60 * 1000 * 0.95; // 5% early buffer
   return Date.now() - new Date(cachedEntry.lastChecked).getTime() >= windowMs;
 }
 
