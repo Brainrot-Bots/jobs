@@ -5,3 +5,9 @@
 > Google SWE early career campus role
 
 ---
+
+### ✅ Open &nbsp; [Manufacturing Structural Test Development Engineer](https://www.google.com/about/careers/applications/jobs/results/82087125486314182-manufacturing-structural-test-development-engineer)
+**Google** &nbsp;·&nbsp; checked Aug 10, 2026
+> Google hardware manufacturing engineer
+
+---
