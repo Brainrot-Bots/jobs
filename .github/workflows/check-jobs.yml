@@ -2,8 +2,8 @@ name: Check Job Postings
 
 on:
   schedule:
-    - cron: "0 */6 * * *"  # every 6 hours — matches minimum schedule in jobs.json
-  workflow_dispatch:         # manual trigger
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,14 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check if any jobs are configured
+        id: jobs_count
+        run: echo "count=$(jq '.jobs | length' jobs.json)" >> $GITHUB_OUTPUT
+
       - uses: actions/setup-node@v4
+        if: steps.jobs_count.outputs.count != '0'
         with:
           node-version: "20"
 
       - name: Check job postings
+        if: steps.jobs_count.outputs.count != '0'
         run: node scripts/check-jobs.mjs
 
       - name: Commit updated cache and README
+        if: steps.jobs_count.outputs.count != '0'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

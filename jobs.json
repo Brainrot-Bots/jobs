@@ -1,14 +1,3 @@
 {
-  "jobs": [
-    {
-      "url": "https://www.google.com/about/careers/applications/jobs/results/78703249065943750-software-engineer-early-career-campus",
-      "message": "Google SWE early career campus role",
-      "schedule": "6h"
-    },
-    {
-      "url": "https://www.google.com/about/careers/applications/jobs/results/82087125486314182-manufacturing-structural-test-development-engineer",
-      "message": "Google hardware manufacturing engineer",
-      "schedule": "6h"
-    }
-  ]
+  "jobs": []
 }
